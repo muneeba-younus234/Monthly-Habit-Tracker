@@ -4,27 +4,159 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Habit Tracker</title>
-    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@400;500&display=swap');
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            text-align: center;
+            background-color: #fff5fa;
+            color: #4a154b;
+            padding: 10px;
+        }
+        h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 36px;
+            color: #d63384;
+        }
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            position: relative;
+        }
+        table {
+            width: max-content;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #f8c1d1;
+            padding: 10px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        th {
+            background-color: #f8c1d1;
+            color: #4a154b;
+            font-size: 16px;
+        }
+        td input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        canvas {
+            width: 100% !important;
+            height: 250px !important;
+        }
+        th:first-child, td:first-child {
+            position: sticky;
+            left: 0;
+            background: #f8c1d1;
+            z-index: 2;
+        }
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: #d63384;
+            border-radius: 4px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: #f8c1d1;
+        }
+        @media screen and (max-width: 600px) {
+            h2 {
+                font-size: 28px;
+            }
+            th, td {
+                padding: 5px;
+                font-size: 12px;
+            }
+            td input[type="checkbox"] {
+                transform: scale(1);
+            }
+        }
+    </style>
 </head>
 <body>
     <h2 id="monthTitle">Habit Tracker</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Habit</th>
-                <script>
-                    document.write([...Array(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate())].map((_, i) => `<th>${i + 1}</th>`).join(''));
-                </script>
-            </tr>
-        </thead>
-        <tbody id="habitTable"></tbody>
-    </table>
-
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Habit</th>
+                    <script>
+                        document.write([...Array(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate())].map((_, i) => `<th>${i + 1}</th>`).join(''));
+                    </script>
+                </tr>
+            </thead>
+            <tbody id="habitTable"></tbody>
+        </table>
+    </div>
     <div class="chart-container">
         <canvas id="habitChart"></canvas>
     </div>
-
-    <script src="script.js"></script>
+    <script>
+        const habits = ["Tahajjud", "Salat e Hajat", "Fajar", "Zuhar", "Asar", "Magrib", "Isha", "Surah Yaseen", "Surah Fajar", "Surah Rehman", "Surah Waqiya", "Surah Muzammil", "Surah Mulk", "Surah Kahf", "Duroor Shareef", "Astagfar", "Allahu akbar", "SubhanAllah", "Alhamdulillah"];
+        const tbody = document.getElementById("habitTable");
+        
+        habits.forEach(habit => {
+            let row = document.createElement("tr");
+            let habitCell = document.createElement("td");
+            habitCell.textContent = habit;
+            row.appendChild(habitCell);
+            
+            for (let i = 1; i <= new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate(); i++) {
+                let cell = document.createElement("td");
+                let checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                cell.appendChild(checkbox);
+                row.appendChild(cell);
+            }
+            tbody.appendChild(row);
+        });
+        
+        function updateChart() {
+            let ctx = document.getElementById("habitChart").getContext("2d");
+            let habitCounts = Array(new Date().getDate()).fill(0);
+            document.querySelectorAll("tbody tr").forEach(row => {
+                row.querySelectorAll("input[type='checkbox']").forEach((checkbox, index) => {
+                    if (checkbox.checked) {
+                        habitCounts[index]++;
+                    }
+                });
+            });
+            if (window.habitChartInstance) window.habitChartInstance.destroy();
+            window.habitChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: new Date().getDate() }, (_, i) => i + 1),
+                    datasets: [{
+                        label: "Completed Habits Per Day",
+                        data: habitCounts,
+                        borderColor: "#d63384",
+                        backgroundColor: "rgba(214, 51, 132, 0.2)",
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: "Days of Month" } },
+                        y: { beginAtZero: true, suggestedMax: 20, title: { display: true, text: "No of Habits Completed" } }
+                    }
+                }
+            });
+        }
+        updateChart();
+    </script>
 </body>
 </html>
