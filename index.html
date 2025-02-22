@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2 id="monthTitle">Habit Tracker</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Habit</th>
+                <script>
+                    document.write([...Array(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate())].map((_, i) => `<th>${i + 1}</th>`).join(''));
+                </script>
+            </tr>
+        </thead>
+        <tbody id="habitTable"></tbody>
+    </table>
+
+    <div class="chart-container">
+        <canvas id="habitChart"></canvas>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

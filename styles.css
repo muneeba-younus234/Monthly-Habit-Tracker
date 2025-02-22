@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@400;500&display=swap');
+
+body {
+    font-family: 'Quicksand', sans-serif;
+    text-align: center;
+    background-color: #fff5fa;
+    color: #4a154b;
+    padding: 10px;
+}
+h2 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 36px;
+    color: #d63384;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow-x: auto;
+    display: block;
+    max-width: 100%;
+}
+th, td {
+    border: 1px solid #f8c1d1;
+    padding: 10px;
+    text-align: center;
+}
+th {
+    background-color: #f8c1d1;
+    color: #4a154b;
+    font-size: 16px;
+}
+td input[type="checkbox"] {
+    transform: scale(1.2);
+}
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+}
+canvas {
+    width: 100% !important;
+    height: 250px !important;
+}
+@media screen and (max-width: 600px) {
+    h2 {
+        font-size: 28px;
+    }
+    th, td {
+        padding: 5px;
+        font-size: 12px;
+    }
+    td input[type="checkbox"] {
+        transform: scale(1);
+    }
+}
