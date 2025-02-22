@@ -104,8 +104,32 @@
     <script>
         const habits = ["Tahajjud", "Salat e Hajat", "Fajar", "Zuhar", "Asar", "Magrib", "Isha", "Surah Yaseen", "Surah Fajar", "Surah Rehman", "Surah Waqiya", "Surah Muzammil", "Surah Mulk", "Surah Kahf", "Duroor Shareef", "Astagfar", "Allahu akbar", "SubhanAllah", "Alhamdulillah"];
         const tbody = document.getElementById("habitTable");
+        const storageKey = `habitTracker_${new Date().getFullYear()}_${new Date().getMonth() + 1}`;
         
-        habits.forEach(habit => {
+        function saveProgress() {
+            let progress = {};
+            document.querySelectorAll("tbody tr").forEach((row, rowIndex) => {
+                progress[rowIndex] = [];
+                row.querySelectorAll("input[type='checkbox']").forEach((checkbox, colIndex) => {
+                    progress[rowIndex][colIndex] = checkbox.checked;
+                });
+            });
+            localStorage.setItem(storageKey, JSON.stringify(progress));
+        }
+        
+        function loadProgress() {
+            let savedProgress = localStorage.getItem(storageKey);
+            if (savedProgress) {
+                savedProgress = JSON.parse(savedProgress);
+                document.querySelectorAll("tbody tr").forEach((row, rowIndex) => {
+                    row.querySelectorAll("input[type='checkbox']").forEach((checkbox, colIndex) => {
+                        checkbox.checked = savedProgress[rowIndex]?.[colIndex] || false;
+                    });
+                });
+            }
+        }
+        
+        habits.forEach((habit, rowIndex) => {
             let row = document.createElement("tr");
             let habitCell = document.createElement("td");
             habitCell.textContent = habit;
@@ -115,11 +139,14 @@
                 let cell = document.createElement("td");
                 let checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
+                checkbox.addEventListener("change", saveProgress);
                 cell.appendChild(checkbox);
                 row.appendChild(cell);
             }
             tbody.appendChild(row);
         });
+        
+        loadProgress();
         
         function updateChart() {
             let ctx = document.getElementById("habitChart").getContext("2d");
@@ -156,6 +183,7 @@
                 }
             });
         }
+        
         updateChart();
     </script>
 </body>
